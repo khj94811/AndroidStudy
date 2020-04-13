@@ -108,9 +108,76 @@
     - Class
 
         ``` kotlin
+            // Class 선언
             class Person{
 
             }
-            val person = Person()
             
+            // Instance 생성
+            val person = Person() 
+            
+        ```
+
+        - Constructor
+
+            ``` kotlin
+                class Person {
+                    constructor(name: String){
+                        println(name)
+                    }
+                }
+            ```
+            ``` kotlin
+                class Person(name: String) {
+                    init{
+                        println(name)
+                    }
+                }
+            ```
+            - 생성자 이외에도 init block에서 작성한 코드가 클래스를 인스턴스화 할 때 가장 먼저 초기화된다.
+
+    - Property
+
+        - Class의 속성을 사용할 때에는 멤버에 직접 접근하며, 이를 Property라고 한다.
+
+        - Java에서는 private 접근 지정자로 은닉화된 멤버 변수에 Get / Set Method를 사용해서 접근하는 방식이 일반적이다.
+
+        - 하지만, Kotlin은 Getter / Setter 를 Property가 대체한다.
+
+    - 접근 제한자
+
+        - Public
+        
+        - Private
+
+        - Protected
+
+        - Internal
+
+    - 상속
+
+        - Kotlin 에서의 Class는 기본적으로 상속이 금지된다.
+
+        - 만약 상속이 가능하게 하려면, Open Keyword를 Class 선언 앞에 추가해야 한다.
+
+        ``` kotlin
+            open class Animal {
+
+            }
+
+            class Dog : Animal(){
+
+            }
+        ```
+
+        - 만약 상속받은 Class가 생성자가 있다면,
+
+        ``` kotlin
+            open class Animal(val name: String) {
+
+            }
+
+            class Dog(name: String) : Animal(name){
+                // ...
+            }
         ```
