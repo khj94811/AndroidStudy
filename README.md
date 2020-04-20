@@ -54,3 +54,23 @@
         3. 데이터를 가져올 조건 지정 (null은 전체 데이터)
         4. 세 번째 인자와 조합하여 조건 지정
         5. 정렬 방법 지정
+
+- Fragment
+
+    - 사용자 인터페이스 모음
+
+    - Fragment 여러 개를 조합하여 액티비티 하나를 구성할 수 있다.
+
+    - 한 번 작성한 Fragment는 재사용 하는 것이 가능하다.
+
+    - Fragment의 생명주기
+
+    ![Fragment LifeCycle](https://developer.android.com/images/fragment_lifecycle.png)
+
+    - onCreateView()
+
+        - Fragment에 표시할 View를 Layout 파일로 부터 읽어옴
+
+    - onCreate()
+
+        - Fragment를 생성할 때, 인자가 함께 넘어온다면 onCreate() 메서드에서 받아서 변수에 담음
