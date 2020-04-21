@@ -10,6 +10,30 @@
 
 ![Android Life Cycle](https://developer.android.com/guide/components/images/activity_lifecycle.png)
 
+- Anko Library 추가
+
+    - gradle (Module)
+    ``` groovy
+        dependencies {
+            implementation "org.jetbrains.anko:anko:$anko_version"
+        }
+    ```
+    - gradle (Project)
+    ``` groovy 
+        buildscript {
+            ext.anko_version='0.10.8'
+        }
+    ```
+
+- Glide Library 추가
+
+    - gradle (Module)
+    ``` groovy
+        dependencies {
+            implementation 'com.github.bumptech.glide:glide:4.11.0'
+        }
+    ```
+
 - Android 4대 Component
 
     - Activity
@@ -67,10 +91,74 @@
 
     ![Fragment LifeCycle](https://developer.android.com/images/fragment_lifecycle.png)
 
-    - onCreateView()
+    - onAttach()
 
-        - Fragment에 표시할 View를 Layout 파일로 부터 읽어옴
+        - Activity에 붙을 때 호출 (Activity 참조 사용 가능)
 
     - onCreate()
 
         - Fragment를 생성할 때, 인자가 함께 넘어온다면 onCreate() 메서드에서 받아서 변수에 담음
+
+        - 레이아웃 완성 전
+
+    - onCreateView()
+
+        - Fragment에 표시할 View를 Layout 파일로 부터 읽어옴
+
+        - 완성된 뷰를 반환 
+
+        - 레이아웃 완성 전
+
+    - onActivityCreated()
+
+        - Activity의 onCreate() 메서드가 수행된 직후 호출
+
+    - onStart()
+
+        - Fragment가 사용자에게 보여질 때 호출
+
+    - onResume()
+
+        - 사용자와 상호작용하기 시작
+    
+    - onPause()
+
+        - Fragment가 일시 중지중이거나 더 이상 사용자와 상호작용 하지 않음
+
+    - onStop()
+
+        - Fragment가 중지됨.
+
+    - onDestroyView()
+
+        - Fragment가 해당 자원을 정리할 수 있도록 함
+
+    - onDestroy()
+
+        - Fragment가 파괴됨.
+
+    - onDetach()
+
+        - Fragment가 Activity에서 완전히 제거됨.
+
+- ViewPager
+
+    - Adapter
+
+        - Item의 목록 정보를 가진 객체
+
+        - Fragment를 Item으로 가지면서 ViewPager에 설정하는 Adapter
+
+            1. FragmentPagerAdapter
+                - Page 내용이 영구적일 때 적합
+                - 한 번 로딩한 페이지는 메모리에 보관됨.
+                - 많은 메모리를 사용
+
+            2. FragmentStatePagerAdapter
+                - 많은 수의 페이지가 있을 때 적합
+                - 보이지 않는 페이지를 메모리에서 제거할 수 있음
+                - 상대적으로 적은 메모리를 차지
+
+            - 사진의 경우 다수의 페이지를 사용할 수 있으므로, FragmentStatePagerAdapter가 적합.
+            
+            
