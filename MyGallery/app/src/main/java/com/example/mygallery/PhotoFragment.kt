@@ -5,30 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_photo.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_URI = "uri"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PhotoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PhotoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var uri: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            uri = it.getString(ARG_URI)
         }
     }
 
+    // Activity가 아닌 곳에서 Layout Resource를 가지고 오면 LayoutInflater 객체의 Inflate 메서드 사용
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,23 +29,22 @@ class PhotoFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_photo, container, false)
     }
 
+    // View가 완성된 직후 호출되는 onViewCreated 메서드
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        /*  imageView에 uri 경로에 있는 사진을 로딩하는 코드
+        *   Glide.with(this)로 사용 준비를 하고, load() 메서드에 uri 값을 인자로 주고, 해당 이미지를 부드럽게 로딩
+        *   into() 메서드로 imageView에 표시
+        * */
+        Glide.with(this).load(uri).into(imageView)
+    }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PhotoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PhotoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        fun newInstance(uri: String) = PhotoFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_URI, uri)
             }
+        }
     }
 }
