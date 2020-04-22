@@ -8,10 +8,13 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
+import kotlin.concurrent.timer
 
 class MainActivity : AppCompatActivity() {
     // 권한 요청에 대한 결과를 분기처리 하는데 사용 (나중에 알아볼 것)
@@ -70,12 +73,32 @@ class MainActivity : AppCompatActivity() {
                 null,
                 null,
                 MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC")
+
+        val fragments = ArrayList<Fragment>()
+
         if (cursor != null) {
             while(cursor.moveToNext()) {
                 val uri = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                 Log.d("MainActivity", uri)
+                fragments.add(PhotoFragment.newInstance(uri))
             }
             cursor.close()
+        }
+
+        // Adapter 추가
+        val adapter = MyPagerAdapter(supportFragmentManager)
+        adapter.updateFragments(fragments)
+        viewPager.adapter = adapter
+
+        timer(period = 3000) {
+            runOnUiThread {
+                if (viewPager.currentItem < adapter.count - 1) {
+                    viewPager.currentItem = viewPager.currentItem + 1
+                }
+                else{
+                    viewPager.currentItem = 0
+                }
+            }
         }
     }
 }
