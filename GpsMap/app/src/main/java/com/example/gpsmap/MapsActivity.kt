@@ -1,8 +1,13 @@
 package com.example.gpsmap
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -16,8 +21,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
+import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -30,8 +37,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: MyLocationCallBack
 
+    private val polyLineOptions = PolylineOptions().width(5f).color(Color.RED)
+
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         setContentView(R.layout.activity_maps)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -70,6 +84,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }, ok = {addLocationListener()})
     }
 
+    override fun onPause() {
+        super.onPause()
+        removeLocationListener()
+    }
+
+    private fun removeLocationListener() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
     private fun addLocationListener() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
@@ -96,6 +119,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }.show()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_ACCESS_FINE_LOCATION -> {
+                if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    addLocationListener()
+                }
+                else {
+                    toast("권한 거부 됨")
+                }
+                return
+            }
+        }
+    }
+
     inner class MyLocationCallBack : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             super.onLocationResult(locationResult)
@@ -104,6 +146,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             location?.run {
                 val latLng = LatLng(latitude, longitude)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+
+                Log.d("MapsActivity", "위도: $latitude, 경도: $longitude")
+
+                polyLineOptions.add(latLng)
+
+                mMap.addPolyline(polyLineOptions)
             }
         }
     }
