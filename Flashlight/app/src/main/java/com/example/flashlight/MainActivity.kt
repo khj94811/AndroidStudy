@@ -3,6 +3,7 @@ package com.example.flashlight
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.intentFor
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,10 +15,10 @@ class MainActivity : AppCompatActivity() {
 
         flashSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                torch.flashOn()
+                startService(intentFor<TorchService>().setAction("on"))     // Anko Library
             }
             else {
-                torch.flashOff()
+                startService(intentFor<TorchService>().setAction("off"))
             }
         }
     }
